@@ -11,7 +11,7 @@ service / on new http:Listener(8090) {
     }
 }
 
-public function sayGreetings(string name, string apiKey, string host, string resourcePath) returns json|error {
+public function sayGreetings(string name, string host, string resourcePath) returns json|error {
     // Creates a new client with the Basic REST service URL.
     http:Client greetingClient = check new (string `https://${host}`);
         // {
