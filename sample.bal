@@ -4,14 +4,14 @@ import ballerina/io;
 service / on new http:Listener(8090) {
     resource function get .(
         string name,
-        @http:Header string apiKey,
-        @http:Header string internalHost
+        @http:Header string internalHost,
+        @http:Header string resourcePath
     ) returns json|error {
-        return sayGreetings(name, apiKey, internalHost);
+        return sayGreetings(name, internalHost, resourcePath);
     }
 }
 
-public function sayGreetings(string name, string apiKey, string host) returns json|error {
+public function sayGreetings(string name, string apiKey, string host, string resourcePath) returns json|error {
     // Creates a new client with the Basic REST service URL.
     http:Client greetingClient = check new (string `https://${host}`);
         // {
@@ -23,10 +23,11 @@ public function sayGreetings(string name, string apiKey, string host) returns js
 
     // Sends a `GET` request to the "/albums" resource.
     // The verb is not mandatory as it is default to "GET".
-    map<string> additionalHeaders = {
-        "API-Key" : apiKey
-    };
-    json|error response = greetingClient->get(string `/gsqs/greetingsserviceinternal/1.0.0?name=${name}`, additionalHeaders);
+    //map<string> additionalHeaders = {
+    //    "API-Key" : apiKey
+    //};
+    string path = resourcePath + string `?name=${name}`;
+    json|error response = greetingClient->get(path);
     if response is error {
         io:println("GET request error:" + response.detail().toString());
     } else {
